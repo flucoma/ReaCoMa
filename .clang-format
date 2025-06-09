@@ -2,3 +2,11 @@ BasedOnStyle: LLVM
 IndentWidth: 4
 TabWidth: 4
 UseTab: Never
+SortIncludes: Never
+IncludeBlocks: Preserve
+
+ContinuationIndentWidth: 4
+
+AccessModifierOffset: -4
+
+IndentCaseLabels: true

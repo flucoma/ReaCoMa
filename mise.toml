@@ -1,0 +1,38 @@
+[tasks.submodule-init]
+run = "git submodule update --init --recursive"
+
+[tasks.make-build-folder]
+run = "mkdir -p ReacomaExtension/build"
+hide = true
+
+[tasks.setupide]
+description = "Extracts the compile_commands.json from CMake for the clangd server"
+run = "cmake .. -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 && mv compile_commands.json ../../"
+dir = "ReacomaExtension/build"
+depends = ["make-build-folder"]
+
+[tasks.configure]
+run = "cmake .. -GNinja -DCMAKE_BUILD_TYPE={{arg(name='build_type', var=true)}} -DDEPLOYMENT_BUILD=OFF"
+dir = "ReacomaExtension/build"
+depends = ["make-build-folder"]
+
+[tasks.configure-deployment]
+run = "cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DDEPLOYMENT_BUILD=ON"
+dir = "ReacomaExtension/build"
+depends = ["make-build-folder"]
+
+[tasks.build]
+run = "ninja"
+dir = "ReacomaExtension/build"
+
+[tasks.deploy]
+description = "Configures, builds, and finalizes the deployment build."
+run = [
+  "{{mise_bin}} run make-build-folder",
+  "{{mise_bin}} run configure-deployment",
+  "{{mise_bin}} run build",
+  "echo done!"
+]
+
+[tasks.clean]
+run = "rm -rf ReacomaExtension/build/*"

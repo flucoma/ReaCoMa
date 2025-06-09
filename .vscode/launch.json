@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "attach",
+            "name": "Attach to REAPER (with Source Map)",
+            "preLaunchTask": "Launch REAPER",
+            "postRunCommands": [
+                "process handle -s false SIGINT", // Useful if REAPER responds to Ctrl+C (SIGINT)
+                "process handle -s false SIGTERM" // Useful if REAPER responds to termination signals
+            ],
+            "program": "/Applications/REAPER.app/Contents/MacOS/REAPER",
+            "MIMode": "lldb",
+            "stopOnEntry": false,
+            "sourceMap": {
+                "/Users/jby/dev/me/reacoma3-iplug/ReacomaExtension": "${workspaceFolder}/ReacomaExtension"
+            }
+        }
+    ]
+}

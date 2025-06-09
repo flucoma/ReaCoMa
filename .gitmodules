@@ -3,4 +3,5 @@
 	url = https://github.com/iPlug2/iPlug2
 [submodule "dependencies/flucoma-core"]
 	path = dependencies/flucoma-core
-	url = git@github.com:flucoma/flucoma-core
+	url = https://github.com/jamesb93/flucoma-core
+	branch = reacoma

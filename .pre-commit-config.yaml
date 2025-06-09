@@ -5,4 +5,4 @@ repos:
     hooks:
     -   id: clang-format
         types_or: [c++, c]
-    exclude: ^dependencies/
+        exclude: ^dependencies/

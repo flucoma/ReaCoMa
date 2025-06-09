@@ -1,0 +1,31 @@
+name: Build and Deploy Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - uses: jdx/mise-action@v2
+        with:
+          version: 2025.10.9
+          install: true
+          cache: true
+
+      - name: build and deploy
+        run: mise deploy
+
+      # - name: Upload Artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: deployment-package
+      #     path: ReacomaExtension/build/

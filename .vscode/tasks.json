@@ -1,0 +1,16 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Launch REAPER",
+            "type": "shell",
+            "command": "open -a \"/Applications/REAPER.app\"",
+            "group": "none",
+            "presentation": {
+                "reveal": "never",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
