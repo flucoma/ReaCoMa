@@ -119,10 +119,10 @@ set(REACOMA_SOURCES
     "VectorBufferAdaptor.h"
 
     # iPlug2 sources
-    
     ${IPLUG_CORE_SOURCES}
     ${IGRAPHICS_SOURCES}
     ${SWELL_SOURCES}
+    ${GLAD_SOURCES}
 
     # Algorithms
     "Algorithms/AmpGateAlgorithm.cpp"
