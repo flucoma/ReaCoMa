@@ -10,26 +10,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build-macos:
+    name: Build on macOS
     if: github.repository == 'flucoma/ReaCoMa-3'
     runs-on: macos-latest
-
     steps:
       - name: Check out code
         uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
-      - uses: jdx/mise-action@v2
+      - name: Install Tools with Mise
+        uses: jdx/mise-action@v2
         with:
-          version: 2025.10.9
           install: true
           cache: true
 
-      - name: build and deploy
-        run: mise deploy
+      - name: Build Project
+        run: mise run deploy
 
-      - name: sign and notarise
+      - name: Sign and Notarise
         uses: flucoma/actions/distribution@main
         with:
           glob: '-e dylib'
@@ -42,16 +42,70 @@ jobs:
           apppwd: ${{ secrets.APPSTORECONNECTPWD }}
           appusr: ${{ secrets.APPSTORECONNECTUSERNAME }}
 
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-artifact
+          path: ReacomaExtension/build/dist/ReaCoMa-MacOS.dmg
+
+  build-windows:
+    name: Build on Windows
+    if: github.repository == 'flucoma/ReaCoMa-3'
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+      
+      - name: Install Tools with Mise
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+
+      - name: Build Project
+        run: mise run deploy
+
+      # TODO: Windows signing? :-(
+
+      - name: Package Windows Build
+        shell: pwsh
+        run: |
+          Compress-Archive -Path ReacomaExtension/build/dist/reaper_ReacomaExtension.dll -DestinationPath ReaCoMa-Windows.zip
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifact
+          path: ReaCoMa-Windows.zip
+          
+  release:
+    name: Create GitHub Release
+    if: github.repository == 'flucoma/ReaCoMa-3'
+    runs-on: ubuntu-latest
+    needs: [build-macos, build-windows]
+    steps:
       - name: Generate Tag Name
         id: generate_tag
         run: echo "TAG_NAME=pre-release-$(date +'%Y-%m-%d-%H%M%S')" >> $GITHUB_ENV
 
-      - name: package and upload
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Display structure of downloaded files
+        run: ls -R artifacts
+
+      - name: Package and Upload Release
         uses: softprops/action-gh-release@v1
         with:
           name: Pre-release ${{ env.TAG_NAME }}
           tag_name: ${{ env.TAG_NAME }}
           body: "ReaCoMa built from: ${{ github.sha }}"
-          files: 'ReacomaExtension/build/dist/ReaCoMa-MacOS.dmg'
+          files: |
+            artifacts/macos-artifact/ReaCoMa-MacOS.dmg
+            artifacts/windows-artifact/ReaCoMa-Windows.zip
           prerelease: true
           draft: false
