@@ -35,7 +35,7 @@ jobs:
           glob: '-e dylib'
           package: 'ReacomaExtension/build/dist'
           output_type: 'dmg'
-          output: 'ReaCoMa-MacOS.dmg'
+          output: 'ReaCoMa-MacOS'
           cert: ${{ secrets.CERT }}
           certpwd: ${{ secrets.CERTPWD }}
           teamid: ${{ secrets.WWDRTEAMID }}
