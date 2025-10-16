@@ -104,6 +104,10 @@ set (SWELL_SOURCES
     "../dependencies/iPlug2/WDL/swell/swell-modstub.mm"
 )
 
+set (GLAD_SOURCES
+    "${DEPS_PATH}/IGraphics/glad/src/glad.c"
+)
+
 # Reacoma sources
 
 set(REACOMA_SOURCES
@@ -195,6 +199,8 @@ target_include_directories(${BINARY_NAME} PRIVATE
     "${DEPS_PATH}/IGraphics/STB"
     "${DEPS_PATH}/IGraphics/yoga"
     "${DEPS_PATH}/IGraphics/yoga/yoga"
+    "${DEPS_PATH}/IGraphics/glad/include"
+    "${DEPS_PATH}/IGraphics/glad/src"
 
     # REAPER SDK path
     "${REAPER_SDK_PATH}"
