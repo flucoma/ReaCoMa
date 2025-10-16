@@ -52,6 +52,6 @@ jobs:
           name: Pre-release ${{ env.TAG_NAME }}
           tag_name: ${{ env.TAG_NAME }}
           body: "ReaCoMa built from: ${{ github.sha }}"
-          files: 'ReaCoMa-MacOS.dmg'
+          files: 'ReacomaExtension/build/dist/ReaCoMa-MacOS.dmg'
           prerelease: true
           draft: false
