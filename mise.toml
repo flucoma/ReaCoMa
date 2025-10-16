@@ -31,16 +31,17 @@ run = '''pwsh -Command "New-Item -Path 'ReacomaExtension/build' -ItemType Direct
 hide = true
 
 [tasks.configure-deployment-windows]
-run = "cmake .. -GNinja -DCMAKE_BUILD_type=Release -DDEPLOYMENT_BUILD=ON"
-dir = "ReacomaExtension/build"
+run = "cmake -S ReacomaExtension -B ReacomaExtension/build -GNinja -DCMAKE_BUILD_TYPE=Release -DDEPLOYMENT_BUILD=ON"
 depends = ["make-build-folder-windows"]
+
+[tasks.build-windows] # Renamed for clarity
+run = "cmake --build ReacomaExtension/build --config Release"
 
 [tasks.deploy-windows]
 description = "Configures and builds for Windows."
 run = [
-  "mise run make-build-folder-windows",
   "mise run configure-deployment-windows",
-  "mise run build",
+  "mise run build-windows",
 ]
 
 [tasks.clean-windows]
