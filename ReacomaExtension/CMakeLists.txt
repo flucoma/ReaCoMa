@@ -105,7 +105,7 @@ set (SWELL_SOURCES
 )
 
 set (GLAD_SOURCES
-    "${DEPS_PATH}/IGraphics/glad/src/glad.c"
+    "${DEPS_PATH}/IGraphics/glad_GL2/src/glad.c"
 )
 
 # Reacoma sources
@@ -199,8 +199,8 @@ target_include_directories(${BINARY_NAME} PRIVATE
     "${DEPS_PATH}/IGraphics/STB"
     "${DEPS_PATH}/IGraphics/yoga"
     "${DEPS_PATH}/IGraphics/yoga/yoga"
-    "${DEPS_PATH}/IGraphics/glad/include"
-    "${DEPS_PATH}/IGraphics/glad/src"
+    "${DEPS_PATH}/IGraphics/glad_GL2/include"
+    "${DEPS_PATH}/IGraphics/glad_GL3/include"
 
     # REAPER SDK path
     "${REAPER_SDK_PATH}"
