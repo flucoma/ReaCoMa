@@ -35,7 +35,7 @@ jobs:
           glob: '-e dylib'
           package: 'ReacomaExtension/build/dist'
           output_type: 'dmg'
-          output: 'ReaCoMa MacOS.dmg'
+          output: 'ReaCoMa-MacOS.dmg'
           cert: ${{ secrets.CERT }}
           certpwd: ${{ secrets.CERTPWD }}
           teamid: ${{ secrets.WWDRTEAMID }}
@@ -52,6 +52,6 @@ jobs:
           name: Pre-release ${{ env.TAG_NAME }}
           tag_name: ${{ env.TAG_NAME }}
           body: "ReaCoMa built from: ${{ github.sha }}"
-          files: 'ReaCoMa MacOS.dmg'
+          files: 'ReaCoMa-MacOS.dmg'
           prerelease: true
           draft: false
