@@ -234,7 +234,7 @@ protected:
         }
 
         PCM_source *newSource =
-            PCM_Source_CreateFromFile(outputFilePath.c_str());
+            PCM_Source_CreateFromFile(outputFilePath.u8string().c_str());
         if (newSource) {
             MediaItem_Take *newTake = AddTakeToMediaItem(item);
             if (newTake) {
