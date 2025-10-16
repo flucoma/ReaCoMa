@@ -1,6 +1,6 @@
 [submodule "dependencies/iPlug2"]
 	path = dependencies/iPlug2
-	url = https://github.com/iPlug2/iPlug2
+	url = https://github.com/jamesb93/iPlug2.git
 [submodule "dependencies/flucoma-core"]
 	path = dependencies/flucoma-core
 	url = https://github.com/jamesb93/flucoma-core
