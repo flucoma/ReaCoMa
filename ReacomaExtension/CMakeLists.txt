@@ -200,7 +200,7 @@ target_include_directories(${BINARY_NAME} PRIVATE
     "${DEPS_PATH}/IGraphics/yoga"
     "${DEPS_PATH}/IGraphics/yoga/yoga"
     "${DEPS_PATH}/IGraphics/glad_GL2/include"
-    "${DEPS_PATH}/IGraphics/glad_GL3/include"
+    "${DEPS_PATH}/IGraphics/glad_GL2/src"
 
     # REAPER SDK path
     "${REAPER_SDK_PATH}"
