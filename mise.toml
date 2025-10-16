@@ -18,30 +18,30 @@ dir = "ReacomaExtension/build"
 [tasks.deploy]
 description = "Configures and builds for macOS/Linux."
 run = [
- "mise run make-build-folder",
- "mise run configure-deployment",
- "mise run build"
+  "mise run make-build-folder",
+  "mise run configure-deployment",
+  "mise run build",
 ]
 
 [tasks.clean]
 run = "rm -rf ReacomaExtension/build"
 
 [tasks.make-build-folder-windows]
-run = 'pwsh -Command "New-Item -Path ''ReacomaExtension/build'' -ItemType Directory -Force"'
+run = '''pwsh -Command "New-Item -Path 'ReacomaExtension/build' -ItemType Directory -Force"'''
 hide = true
 
 [tasks.configure-deployment-windows]
-run = "cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release -DDEPLOYMENT_BUILD=ON"
+run = "cmake .. -GNinja -DCMAKE_BUILD_type=Release -DDEPLOYMENT_BUILD=ON"
 dir = "ReacomaExtension/build"
 depends = ["make-build-folder-windows"]
 
 [tasks.deploy-windows]
 description = "Configures and builds for Windows."
 run = [
- "mise run make-build-folder-windows",
- "mise run configure-deployment-windows",
- "mise run build"
+  "mise run make-build-folder-windows",
+  "mise run configure-deployment-windows",
+  "mise run build",
 ]
 
 [tasks.clean-windows]
-run = 'pwsh -Command "if (Test-Path ''ReacomaExtension/build'') { Remove-Item -Path ''ReacomaExtension/build'' -Recurse -Force }"'
+run = '''pwsh -Command "if (Test-Path 'ReacomaExtension/build') { Remove-Item -Path 'ReacomaExtension/build' -Recurse -Force }"'''
