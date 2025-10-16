@@ -5,8 +5,13 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
+    if: github.repository == 'flucoma/ReaCoMa-3'
     runs-on: macos-latest
 
     steps:
@@ -24,8 +29,29 @@ jobs:
       - name: build and deploy
         run: mise deploy
 
-      # - name: Upload Artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: deployment-package
-      #     path: ReacomaExtension/build/
+      - name: sign and notarise
+        uses: flucoma/actions/distribution@main
+        with:
+          glob: '-e dylib'
+          package: 'ReacomaExtension/build/dist'
+          output_type: 'dmg'
+          output: 'ReaCoMa MacOS.dmg'
+          cert: ${{ secrets.CERT }}
+          certpwd: ${{ secrets.CERTPWD }}
+          teamid: ${{ secrets.WWDRTEAMID }}
+          apppwd: ${{ secrets.APPSTORECONNECTPWD }}
+          appusr: ${{ secrets.APPSTORECONNECTUSERNAME }}
+
+      - name: Generate Tag Name
+        id: generate_tag
+        run: echo "TAG_NAME=pre-release-$(date +'%Y-%m-%d-%H%M%S')" >> $GITHUB_ENV
+
+      - name: package and upload
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Pre-release ${{ env.TAG_NAME }}
+          tag_name: ${{ env.TAG_NAME }}
+          body: "ReaCoMa built from: ${{ github.sha }}"
+          files: 'ReaCoMa MacOS.dmg'
+          prerelease: true
+          draft: false
