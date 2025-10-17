@@ -61,24 +61,24 @@ bool HPSSAlgorithm::DoProcess(InputBufferT::type &sourceBuffer, int numChannels,
     if (static_cast<int>(percFilterSizeParam) % 2 == 0)
         percFilterSizeParam += 1;
 
-    mParams.template set<0>(std::move(sourceBuffer), nullptr);     // source
-    mParams.template set<1>(LongT::type(0), nullptr);              // startChan
-    mParams.template set<2>(LongT::type(-1), nullptr);             // numChans
-    mParams.template set<3>(LongT::type(0), nullptr);              // startFrame
-    mParams.template set<4>(LongT::type(-1), nullptr);             // numFrames
+    mParams.template set<0>(std::move(sourceBuffer), nullptr);   // source
+    mParams.template set<1>(std::move(LongT::type(0)), nullptr);       // startChan
+    mParams.template set<2>(std::move(LongT::type(-1)), nullptr);       // numChans
+    mParams.template set<3>(std::move(LongT::type(0)), nullptr);       // startFrame
+    mParams.template set<4>(std::move(LongT::type(-1)), nullptr);       // numFrames
     mParams.template set<5>(std::move(harmOutputBuffer), nullptr); // harmonic
     mParams.template set<6>(std::move(percOutputBuffer), nullptr); // percussive
     mParams.template set<7>(nullptr, nullptr);
     mParams.template set<8>(
-        LongRuntimeMaxParam(harmFilterSizeParam, harmFilterSizeParam), nullptr);
+        std::move(LongRuntimeMaxParam(harmFilterSizeParam, harmFilterSizeParam)), nullptr);
     mParams.template set<9>(
-        LongRuntimeMaxParam(percFilterSizeParam, percFilterSizeParam), nullptr);
-    mParams.template set<10>(LongT::type(0), nullptr);
-    mParams.template set<11>(FloatPairsArrayT::type(0, 1, 1, 1), nullptr);
-    mParams.template set<12>(FloatPairsArrayT::type(1, 0, 1, 1), nullptr);
+        std::move(LongRuntimeMaxParam(percFilterSizeParam, percFilterSizeParam)), nullptr);
+    mParams.template set<10>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<11>(std::move(FloatPairsArrayT::type(0, 1, 1, 1)), nullptr);
+    mParams.template set<12>(std::move(FloatPairsArrayT::type(1, 0, 1, 1)), nullptr);
     mParams.template set<13>(
-        fluid::client::FFTParams(windowSize, hopSize, fftSize,
-                                 std::max(windowSize, fftSize)),
+        std::move(fluid::client::FFTParams(windowSize, hopSize, fftSize,
+                                           std::max(windowSize, fftSize))),
         nullptr);
 
     mClient = NRTThreadedHPSSClient(mParams, mContext);

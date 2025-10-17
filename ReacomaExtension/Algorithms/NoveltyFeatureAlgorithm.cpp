@@ -80,18 +80,18 @@ bool NoveltyFeatureAlgorithm::DoProcess(InputBufferT::type &sourceBuffer,
         filtersize += 1;
 
     mParams.template set<0>(std::move(sourceBuffer), nullptr);
-    mParams.template set<1>(LongT::type(0), nullptr);
-    mParams.template set<2>(LongT::type(-1), nullptr);
-    mParams.template set<3>(LongT::type(0), nullptr);
-    mParams.template set<4>(LongT::type(-1), nullptr);
+    mParams.template set<1>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<2>(std::move(LongT::type(-1)), nullptr);
+    mParams.template set<3>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<4>(std::move(LongT::type(-1)), nullptr);
     mParams.template set<5>(std::move(slicesOutputBuffer), nullptr);
-    mParams.template set<6>(LongT::type(algorithm), nullptr);
-    mParams.template set<7>(LongRuntimeMaxParam(kernelsize, kernelsize),
-                            nullptr);
-    mParams.template set<8>(LongRuntimeMaxParam(filtersize, filtersize),
-                            nullptr);
+    mParams.template set<6>(std::move(LongT::type(algorithm)), nullptr);
+    mParams.template set<7>(std::move(LongRuntimeMaxParam(kernelsize, kernelsize)),
+                             nullptr);
+    mParams.template set<8>(std::move(LongRuntimeMaxParam(filtersize, filtersize)),
+                             nullptr);
     mParams.template set<10>(
-        fluid::client::FFTParams(windowSize, hopSize, fftSize), nullptr);
+        std::move(fluid::client::FFTParams(windowSize, hopSize, fftSize)), nullptr);
 
     mClient = NRTThreadedNoveltyFeatureClient(mParams, mContext);
     mClient.setSynchronous(false);

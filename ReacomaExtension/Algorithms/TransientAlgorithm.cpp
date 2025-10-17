@@ -51,21 +51,21 @@ bool TransientAlgorithm::DoProcess(InputBufferT::type &sourceBuffer,
     auto resOutputBuffer = fluid::client::BufferT::type(resMemoryBuffer);
 
     mParams.template set<0>(std::move(sourceBuffer), nullptr);
-    mParams.template set<1>(LongT::type(0), nullptr);
-    mParams.template set<2>(LongT::type(-1), nullptr);
-    mParams.template set<3>(LongT::type(0), nullptr);
-    mParams.template set<4>(LongT::type(-1), nullptr);
+    mParams.template set<1>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<2>(std::move(LongT::type(-1)), nullptr);
+    mParams.template set<3>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<4>(std::move(LongT::type(-1)), nullptr);
     mParams.template set<5>(std::move(transOutputBuffer),
                             nullptr);                             // transients
     mParams.template set<6>(std::move(resOutputBuffer), nullptr); // residual
-    mParams.template set<7>(LongT::type(order), nullptr);
-    mParams.template set<8>(LongT::type(blockSize), nullptr);
-    mParams.template set<9>(LongT::type(padding), nullptr);
-    mParams.template set<10>(FloatT::type(skew), nullptr);
-    mParams.template set<11>(FloatT::type(fwd), nullptr);
-    mParams.template set<12>(FloatT::type(bwd), nullptr);
-    mParams.template set<13>(LongT::type(winSize), nullptr);
-    mParams.template set<14>(LongT::type(clumpLength), nullptr);
+    mParams.template set<7>(std::move(LongT::type(order)), nullptr);
+    mParams.template set<8>(std::move(LongT::type(blockSize)), nullptr);
+    mParams.template set<9>(std::move(LongT::type(padding)), nullptr);
+    mParams.template set<10>(std::move(FloatT::type(skew)), nullptr);
+    mParams.template set<11>(std::move(FloatT::type(fwd)), nullptr);
+    mParams.template set<12>(std::move(FloatT::type(bwd)), nullptr);
+    mParams.template set<13>(std::move(LongT::type(winSize)), nullptr);
+    mParams.template set<14>(std::move(LongT::type(clumpLength)), nullptr);
 
     mClient = NRTThreadedTransientsClient(mParams, mContext);
     mClient.setSynchronous(false);

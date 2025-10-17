@@ -68,22 +68,22 @@ bool AmpGateAlgorithm::DoProcess(InputBufferT::type &sourceBuffer,
         mApiProvider->GetParam(mBaseParamIdx + kHiPassFreq)->Value();
 
     mParams.template set<0>(std::move(sourceBuffer), nullptr);
-    mParams.template set<1>(LongT::type(0), nullptr);
-    mParams.template set<2>(LongT::type(-1), nullptr);
-    mParams.template set<3>(LongT::type(0), nullptr);
-    mParams.template set<4>(LongT::type(-1), nullptr);
+    mParams.template set<1>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<2>(std::move(LongT::type(-1)), nullptr);
+    mParams.template set<3>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<4>(std::move(LongT::type(-1)), nullptr);
     mParams.template set<5>(std::move(slicesOutputBuffer), nullptr);
-    mParams.template set<6>(LongT::type(rampUpTime), nullptr);
-    mParams.template set<7>(LongT::type(rampDownTime), nullptr);
-    mParams.template set<8>(FloatT::type(onThreshold), nullptr);
-    mParams.template set<9>(FloatT::type(offThreshold), nullptr);
-    mParams.template set<10>(LongT::type(minEventDuration), nullptr);
-    mParams.template set<11>(LongT::type(minSilenceDuration), nullptr);
-    mParams.template set<12>(LongT::type(minTimeAboveThreshold), nullptr);
-    mParams.template set<13>(LongT::type(minTimeBelowThreshold), nullptr);
-    mParams.template set<14>(LongT::type(upwardLookupTime), nullptr);
-    mParams.template set<15>(LongT::type(downwardLookupTime), nullptr);
-    mParams.template set<16>(LongT::type(hiPassFreq), nullptr);
+    mParams.template set<6>(std::move(LongT::type(rampUpTime)), nullptr);
+    mParams.template set<7>(std::move(LongT::type(rampDownTime)), nullptr);
+    mParams.template set<8>(std::move(FloatT::type(onThreshold)), nullptr);
+    mParams.template set<9>(std::move(FloatT::type(offThreshold)), nullptr);
+    mParams.template set<10>(std::move(LongT::type(minEventDuration)), nullptr);
+    mParams.template set<11>(std::move(LongT::type(minSilenceDuration)), nullptr);
+    mParams.template set<12>(std::move(LongT::type(minTimeAboveThreshold)), nullptr);
+    mParams.template set<13>(std::move(LongT::type(minTimeBelowThreshold)), nullptr);
+    mParams.template set<14>(std::move(LongT::type(upwardLookupTime)), nullptr);
+    mParams.template set<15>(std::move(LongT::type(downwardLookupTime)), nullptr);
+    mParams.template set<16>(std::move(LongT::type(hiPassFreq)), nullptr);
 
     mClient = NRTThreadedAmpGateClient(mParams, mContext);
     mClient.setSynchronous(false);

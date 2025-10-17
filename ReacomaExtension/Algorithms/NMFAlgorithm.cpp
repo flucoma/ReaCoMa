@@ -48,21 +48,21 @@ bool NMFAlgorithm::DoProcess(InputBufferT::type &sourceBuffer, int numChannels,
         fluid::client::BufferT::type(resynthMemoryBuffer);
 
     mParams.template set<0>(std::move(sourceBuffer), nullptr);
-    mParams.template set<1>(LongT::type(0), nullptr);
-    mParams.template set<2>(LongT::type(-1), nullptr);
-    mParams.template set<3>(LongT::type(0), nullptr);
-    mParams.template set<4>(LongT::type(-1), nullptr);
+    mParams.template set<1>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<2>(std::move(LongT::type(-1)), nullptr);
+    mParams.template set<3>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<4>(std::move(LongT::type(-1)), nullptr);
     mParams.template set<5>(std::move(resynthOutputBuffer), nullptr);
-    mParams.template set<6>(LongT::type(1), nullptr);
+    mParams.template set<6>(std::move(LongT::type(1)), nullptr);
     mParams.template set<7>(nullptr, nullptr);
-    mParams.template set<8>(LongT::type(0), nullptr);
+    mParams.template set<8>(std::move(LongT::type(0)), nullptr);
     mParams.template set<9>(nullptr, nullptr);
-    mParams.template set<10>(LongT::type(0), nullptr);
-    mParams.template set<11>(componentsParam, nullptr);
-    mParams.template set<12>(iterationsParam, nullptr);
+    mParams.template set<10>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<11>(std::move(componentsParam), nullptr);
+    mParams.template set<12>(std::move(iterationsParam), nullptr);
     mParams.template set<13>(
-        fluid::client::FFTParams(windowSize, hopSize, fftSize,
-                                 std::max(windowSize, fftSize)),
+        std::move(fluid::client::FFTParams(windowSize, hopSize, fftSize,
+                                           std::max(windowSize, fftSize))),
         nullptr);
 
     mClient = NRTThreadedNMFClient(mParams, mContext);

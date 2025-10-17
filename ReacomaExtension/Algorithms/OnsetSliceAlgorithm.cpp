@@ -55,20 +55,20 @@ bool OnsetSliceAlgorithm::DoProcess(InputBufferT::type &sourceBuffer,
         filterSize += 1;
 
     mParams.template set<0>(std::move(sourceBuffer), nullptr);
-    mParams.template set<1>(LongT::type(0), nullptr);
-    mParams.template set<2>(LongT::type(-1), nullptr);
-    mParams.template set<3>(LongT::type(0), nullptr);
-    mParams.template set<4>(LongT::type(-1), nullptr);
+    mParams.template set<1>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<2>(std::move(LongT::type(-1)), nullptr);
+    mParams.template set<3>(std::move(LongT::type(0)), nullptr);
+    mParams.template set<4>(std::move(LongT::type(-1)), nullptr);
     mParams.template set<5>(std::move(slicesOutputBuffer), nullptr);
-    mParams.template set<6>(LongT::type(metric), nullptr);
-    mParams.template set<7>(FloatT::type(threshold), nullptr);
-    mParams.template set<8>(LongT::type(minLength), nullptr);
-    mParams.template set<9>(LongRuntimeMaxParam(filterSize, filterSize),
-                            nullptr);
-    mParams.template set<10>(LongT::type(frameDelta), nullptr);
+    mParams.template set<6>(std::move(LongT::type(metric)), nullptr);
+    mParams.template set<7>(std::move(FloatT::type(threshold)), nullptr);
+    mParams.template set<8>(std::move(LongT::type(minLength)), nullptr);
+    mParams.template set<9>(std::move(LongRuntimeMaxParam(filterSize, filterSize)),
+                             nullptr);
+    mParams.template set<10>(std::move(LongT::type(frameDelta)), nullptr);
     mParams.template set<11>(
-        fluid::client::FFTParams(windowSize, hopSize, fftSize,
-                                 std::max(windowSize, fftSize)),
+        std::move(fluid::client::FFTParams(windowSize, hopSize, fftSize,
+                                           std::max(windowSize, fftSize))),
         nullptr);
 
     mClient = NRTThreadingOnsetSliceClient(mParams, mContext);
