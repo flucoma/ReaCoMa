@@ -1,13 +1,34 @@
 cmake_minimum_required(VERSION 3.16)
 
+if(POLICY CMP0091)
+    cmake_policy(SET CMP0091 NEW)
+endif()
+
+if(MSVC)
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "MSVC Runtime Library" FORCE)
+endif()
+
 project(ReacomaExtension VERSION 1.0.0 LANGUAGES C CXX)
+
+if(WIN32 AND NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message(FATAL_ERROR "This project requires 64-bit compilation. Please configure with: cmake .. -A x64")
+endif()
+
+if(MSVC)
+  foreach(flag_var CMAKE_C_FLAGS CMAKE_CXX_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_CXX_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE CMAKE_CXX_FLAGS_RELEASE)
+    string(REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+  endforeach()
+endif()
 
 add_compile_definitions(NOMINMAX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# The name of the final binary file.
+if(MSVC)
+    add_compile_options(/EHsc)
+endif()
+
 set(BINARY_NAME ReacomaExtension)
 
 set(IPLUG2_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/iPlug2")
@@ -19,8 +40,6 @@ set(IPLUG_PATH "${IPLUG2_ROOT}/IPlug")
 set(IGRAPHICS_PATH "${IPLUG2_ROOT}/IGraphics")
 set(REAPER_SDK_PATH "${DEPS_PATH}/IPlug/REAPER_SDK")
 set(SWELL_PATH "${WDL_PATH}/swell")
-
-# iPlug2 sources
 
 set(IPLUG_CORE_MAIN_SOURCES
     "../dependencies/iPlug2/IPlug/IPlug_include_in_plug_hdr.h"
@@ -102,15 +121,11 @@ set(IGRAPHICS_SOURCES
 
 if(APPLE)
   set(SWELL_SOURCES "${SWELL_PATH}/swell-modstub.mm")
-else()
+elseif(WIN32)
+  set(SWELL_SOURCES "") # SWELL is not used on Windows
+else() # Linux
   set(SWELL_SOURCES "${SWELL_PATH}/swell-modstub-generic.cpp")
 endif()
-
-set (GLAD_SOURCES
-    "${DEPS_PATH}/IGraphics/glad_GL2/src/glad.c"
-)
-
-# Reacoma sources
 
 set(REACOMA_SOURCES
     # Main project files
@@ -124,7 +139,6 @@ set(REACOMA_SOURCES
     ${IPLUG_CORE_SOURCES}
     ${IGRAPHICS_SOURCES}
     ${SWELL_SOURCES}
-    ${GLAD_SOURCES}
 
     # Algorithms
     "Algorithms/AmpGateAlgorithm.cpp"
@@ -170,6 +184,7 @@ set(REACOMA_SOURCES
 )
 
 add_library(${BINARY_NAME} SHARED ${REACOMA_SOURCES})
+
 add_subdirectory(${FLUCOMA_CORE_PATH} ${CMAKE_BINARY_DIR}/flucoma-core-build)
 
 target_link_libraries(${BINARY_NAME} PUBLIC FLUID_DECOMPOSITION)
@@ -221,10 +236,11 @@ target_compile_definitions(${BINARY_NAME} PRIVATE
     SWELL_PROVIDED_BY_APP
     LICE_PROVIDED_BY_APP
     IGRAPHICS_NANOVG
-    IGRAPHICS_METAL
 )
 
 if(APPLE)
+    target_compile_definitions(${BINARY_NAME} PRIVATE IGRAPHICS_METAL)
+
     target_link_libraries(${BINARY_NAME} PRIVATE
         "-framework Metal"
         "-framework MetalKit"
@@ -237,15 +253,32 @@ if(APPLE)
     )
     
     set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum macOS deployment version")
+elseif(WIN32)
+    target_compile_definitions(${BINARY_NAME} PRIVATE IGRAPHICS_GL2)
+
+    target_link_libraries(${BINARY_NAME} PRIVATE
+        gdi32
+        user32
+        Comctl32
+        Shlwapi
+        Wininet
+        opengl32
+    )
 endif()
 
+# Use appropriate optimization flags for MSVC vs. GCC/Clang
+if(MSVC)
+    target_compile_options(${BINARY_NAME} PRIVATE
+        $<$<CONFIG:RELEASE>:/O2> # Max speed for Release
+        $<$<CONFIG:DEBUG>:/Od>   # Disable optimization for Debug
+    )
+else()
+    target_compile_options(${BINARY_NAME} PRIVATE
+        $<$<CONFIG:RELEASE>:-O3>
+        $<$<CONFIG:DEBUG>:-O0>
+    )
+endif()
 
-target_compile_options(${BINARY_NAME} PRIVATE
-    $<$<CONFIG:RELEASE>:-O3>
-    $<$<CONFIG:DEBUG>:-O0>
-)
-
-target_compile_options(${BINARY_NAME} PRIVATE -Wno-write-strings -w)
 
 if(APPLE AND CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "x86_64")
     message(STATUS "Intel Mac detected. Adding x86-specific SSE flags.")
