@@ -100,9 +100,11 @@ set(IGRAPHICS_SOURCES
   ${IGRAPHICS_PLATFORM_SOURCES}
 )
 
-set (SWELL_SOURCES
-    "../dependencies/iPlug2/WDL/swell/swell-modstub.mm"
-)
+if(APPLE)
+  set(SWELL_SOURCES "${SWELL_PATH}/swell-modstub.mm")
+else()
+  set(SWELL_SOURCES "${SWELL_PATH}/swell-modstub-generic.cpp")
+endif()
 
 set (GLAD_SOURCES
     "${DEPS_PATH}/IGraphics/glad_GL2/src/glad.c"
