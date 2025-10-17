@@ -185,6 +185,12 @@ set(REACOMA_SOURCES
 
 add_library(${BINARY_NAME} SHARED ${REACOMA_SOURCES})
 
+if(MSVC)
+    set_property(TARGET ${BINARY_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
+
+# Add flucoma-core subdirectory
+# The static runtime library setting above will be inherited
 add_subdirectory(${FLUCOMA_CORE_PATH} ${CMAKE_BINARY_DIR}/flucoma-core-build)
 
 target_link_libraries(${BINARY_NAME} PUBLIC FLUID_DECOMPOSITION)
@@ -277,6 +283,15 @@ else()
         $<$<CONFIG:RELEASE>:-O3>
         $<$<CONFIG:DEBUG>:-O0>
     )
+endif()
+
+# Apply compiler-specific warning suppression flags.
+if(MSVC)
+    # Set warning level to 0 for MSVC, which suppresses all warnings.
+    target_compile_options(${BINARY_NAME} PRIVATE /W0)
+else()
+    # -w suppresses all warnings on GCC/Clang.
+    target_compile_options(${BINARY_NAME} PRIVATE -w)
 endif()
 
 
