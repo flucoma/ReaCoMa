@@ -106,7 +106,7 @@ jobs:
       - name: Package and Upload Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Pre-release ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}
           tag_name: ${{ env.TAG_NAME }}
           body: "ReaCoMa built from: ${{ github.sha }}"
           files: |
