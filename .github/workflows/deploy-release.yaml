@@ -66,6 +66,9 @@ jobs:
           install: true
           cache: true
 
+      - name: Setup MSVC Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+
       - name: Build Project
         run: mise run deploy-windows
 
