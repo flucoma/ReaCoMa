@@ -183,6 +183,10 @@ set(REACOMA_SOURCES
     "resources/roboto.cpp"
 )
 
+if(WIN32)
+    list(APPEND REACOMA_SOURCES "resources/main.rc")
+endif()
+
 add_library(${BINARY_NAME} SHARED ${REACOMA_SOURCES})
 
 if(MSVC)
