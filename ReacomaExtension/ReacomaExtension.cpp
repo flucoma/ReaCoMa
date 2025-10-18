@@ -23,6 +23,7 @@
 #include "Algorithms/OnsetSliceAlgorithm.h"
 #include "Algorithms/AmpGateAlgorithm.h"
 #include "Algorithms/NoveltyFeatureAlgorithm.h"
+#include "Algorithms/AmpSliceAlgorithm.h"
 
 template <ReacomaExtension::Mode M> struct ProcessAction {
     void operator()(IControl *pCaller) {
@@ -86,9 +87,9 @@ ReacomaExtension::ReacomaExtension(reaper_plugin_info_t *pRec)
         true, &mGUIToggle);
 
     AddParam();
-    auto parameterLabels = {
-        "Novelty Slice", "Onset Slice", "Transient Slice", "HPSS",
-        "NMF",           "Transients",  "Amp Gate",        "Novelty Feature"};
+    auto parameterLabels = {"Novelty Slice", "Amp Slice",       "Amp Gate",
+                            "Onset Slice",   "Transient Slice", "HPSS",
+                            "NMF",           "Transients"};
     GetParam(kParamAlgorithmChoice)
         ->InitEnum("Algorithm", kNoveltySlice, parameterLabels);
 
@@ -113,8 +114,8 @@ ReacomaExtension::ReacomaExtension(reaper_plugin_info_t *pRec)
     mAmpGateAlgorithm = std::make_unique<AmpGateAlgorithm>(this);
     mAmpGateAlgorithm->RegisterParameters();
 
-    mNoveltyFeatureAlgorithm = std::make_unique<NoveltyFeatureAlgorithm>(this);
-    mNoveltyFeatureAlgorithm->RegisterParameters();
+    mAmpSliceAlgorithm = std::make_unique<AmpSliceAlgorithm>(this);
+    mAmpSliceAlgorithm->RegisterParameters();
 
     mAllAlgorithms.push_back(mNoveltyAlgorithm.get());
     mAllAlgorithms.push_back(mHPSSAlgorithm.get());
@@ -124,8 +125,9 @@ ReacomaExtension::ReacomaExtension(reaper_plugin_info_t *pRec)
     mAllAlgorithms.push_back(mTransientSliceAlgorithm.get());
     mAllAlgorithms.push_back(mAmpGateAlgorithm.get());
     mAllAlgorithms.push_back(mNoveltyFeatureAlgorithm.get());
+    mAllAlgorithms.push_back(mAmpSliceAlgorithm.get());
 
-    SetAlgorithmChoice(kNoveltyFeature, false);
+    SetAlgorithmChoice(kNoveltySlice, false);
 
     mLayoutFunc = [&](IGraphics *pGraphics) { SetupUI(pGraphics); };
 }
@@ -546,8 +548,8 @@ void ReacomaExtension::SetAlgorithmChoice(EAlgorithmChoice choice,
         case kAmpGate:
             mCurrentActiveAlgorithmPtr = mAmpGateAlgorithm.get();
             break;
-        case kNoveltyFeature:
-            mCurrentActiveAlgorithmPtr = mNoveltyFeatureAlgorithm.get();
+        case kAmpSlice:
+            mCurrentActiveAlgorithmPtr = mAmpSliceAlgorithm.get();
             break;
         default:
             mCurrentActiveAlgorithmPtr = nullptr;

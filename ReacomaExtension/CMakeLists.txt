@@ -162,6 +162,8 @@ set(REACOMA_SOURCES
     "Algorithms/TransientAlgorithm.h"
     "Algorithms/TransientSliceAlgorithm.cpp"
     "Algorithms/TransientSliceAlgorithm.h"
+    "Algorithms/AmpSliceAlgorithm.cpp"
+    "Algorithms/AmpSliceAlgorithm.h"
 
     # UI Components
     "Components/ReacomaButton.cpp"

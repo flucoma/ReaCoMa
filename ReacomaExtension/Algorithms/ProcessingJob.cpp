@@ -7,6 +7,7 @@
 #include "TransientSliceAlgorithm.h"
 #include "TransientAlgorithm.h"
 #include "NoveltyFeatureAlgorithm.h"
+#include "AmpSliceAlgorithm.h"
 #include <memory>
 
 ProcessingJob::ProcessingJob(std::unique_ptr<IAlgorithm> algorithm,
@@ -42,38 +43,38 @@ ProcessingJob::Create(ReacomaExtension::EAlgorithmChoice algoChoice,
     const IAlgorithm *prototypeAlgorithm = nullptr;
 
     switch (algoChoice) {
-    case ReacomaExtension::kNoveltySlice:
-        algorithm = std::make_unique<NoveltySliceAlgorithm>(provider);
-        prototypeAlgorithm = provider->GetNoveltySliceAlgorithm();
-        break;
-    case ReacomaExtension::kHPSS:
-        algorithm = std::make_unique<HPSSAlgorithm>(provider);
-        prototypeAlgorithm = provider->GetHPSSAlgorithm();
-        break;
-    case ReacomaExtension::kNMF:
-        algorithm = std::make_unique<NMFAlgorithm>(provider);
-        prototypeAlgorithm = provider->GetNMFAlgorithm();
-        break;
-    case ReacomaExtension::kOnsetSlice:
-        algorithm = std::make_unique<OnsetSliceAlgorithm>(provider);
-        prototypeAlgorithm = provider->GetOnsetSliceAlgorithm();
-        break;
-    case ReacomaExtension::kTransients:
-        algorithm = std::make_unique<TransientAlgorithm>(provider);
-        prototypeAlgorithm = provider->GetTransientsAlgorithm();
-        break;
-    case ReacomaExtension::kTransientSlice:
-        algorithm = std::make_unique<TransientSliceAlgorithm>(provider);
-        prototypeAlgorithm = provider->GetTransientSliceAlgorithm();
-        break;
-    case ReacomaExtension::kAmpGate:
-        algorithm = std::make_unique<AmpGateAlgorithm>(provider);
-        prototypeAlgorithm = provider->GetAmpGateAlgorithm();
-        break;
-    case ReacomaExtension::kNoveltyFeature:
-        algorithm = std::make_unique<NoveltyFeatureAlgorithm>(provider);
-        prototypeAlgorithm = provider->GetNoveltyFeatureAlgorithm();
-        break;
+        case ReacomaExtension::kNoveltySlice:
+            algorithm = std::make_unique<NoveltySliceAlgorithm>(provider);
+            prototypeAlgorithm = provider->GetNoveltySliceAlgorithm();
+            break;
+        case ReacomaExtension::kHPSS:
+            algorithm = std::make_unique<HPSSAlgorithm>(provider);
+            prototypeAlgorithm = provider->GetHPSSAlgorithm();
+            break;
+        case ReacomaExtension::kNMF:
+            algorithm = std::make_unique<NMFAlgorithm>(provider);
+            prototypeAlgorithm = provider->GetNMFAlgorithm();
+            break;
+        case ReacomaExtension::kOnsetSlice:
+            algorithm = std::make_unique<OnsetSliceAlgorithm>(provider);
+            prototypeAlgorithm = provider->GetOnsetSliceAlgorithm();
+            break;
+        case ReacomaExtension::kTransients:
+            algorithm = std::make_unique<TransientAlgorithm>(provider);
+            prototypeAlgorithm = provider->GetTransientsAlgorithm();
+            break;
+        case ReacomaExtension::kTransientSlice:
+            algorithm = std::make_unique<TransientSliceAlgorithm>(provider);
+            prototypeAlgorithm = provider->GetTransientSliceAlgorithm();
+            break;
+        case ReacomaExtension::kAmpGate:
+            algorithm = std::make_unique<AmpGateAlgorithm>(provider);
+            prototypeAlgorithm = provider->GetAmpGateAlgorithm();
+            break;
+        case ReacomaExtension::kAmpSlice:
+            algorithm = std::make_unique<AmpSliceAlgorithm>(provider);
+            prototypeAlgorithm = provider->GetAmpSliceAlgorithm();
+            break;
     }
 
     if (algorithm && prototypeAlgorithm) {

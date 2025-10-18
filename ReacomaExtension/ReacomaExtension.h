@@ -33,6 +33,7 @@ class NoveltySliceAlgorithm;
 class OnsetSliceAlgorithm;
 class AmpGateAlgorithm;
 class NoveltyFeatureAlgorithm;
+class AmpSliceAlgorithm;
 struct ReacomaTheme;
 
 class IAlgorithm;
@@ -53,13 +54,13 @@ public:
 
     enum EAlgorithmChoice {
         kNoveltySlice = 0,
+        kAmpSlice,
+        kAmpGate,
         kOnsetSlice,
         kTransientSlice,
         kHPSS,
         kNMF,
         kTransients,
-        kAmpGate,
-        kNoveltyFeature,
         kNumAlgorithmChoices
     };
 
@@ -91,6 +92,9 @@ public:
     NoveltyFeatureAlgorithm *GetNoveltyFeatureAlgorithm() const {
         return mNoveltyFeatureAlgorithm.get();
     }
+    AmpSliceAlgorithm *GetAmpSliceAlgorithm() const {
+        return mAmpSliceAlgorithm.get();
+    }
 
 private:
     bool mUIRelayoutIsNeeded = false;
@@ -105,6 +109,7 @@ private:
     std::unique_ptr<TransientSliceAlgorithm> mTransientSliceAlgorithm;
     std::unique_ptr<AmpGateAlgorithm> mAmpGateAlgorithm;
     std::unique_ptr<NoveltyFeatureAlgorithm> mNoveltyFeatureAlgorithm;
+    std::unique_ptr<AmpSliceAlgorithm> mAmpSliceAlgorithm;
     std::vector<IAlgorithm *> mAllAlgorithms;
 
     void OnParamChangeUI(int paramIdx, EParamSource source) override;
