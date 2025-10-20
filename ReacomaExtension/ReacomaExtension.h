@@ -32,7 +32,6 @@ class TransientSliceAlgorithm;
 class NoveltySliceAlgorithm;
 class OnsetSliceAlgorithm;
 class AmpGateAlgorithm;
-class NoveltyFeatureAlgorithm;
 class AmpSliceAlgorithm;
 struct ReacomaTheme;
 
@@ -89,9 +88,6 @@ public:
     AmpGateAlgorithm *GetAmpGateAlgorithm() const {
         return mAmpGateAlgorithm.get();
     }
-    NoveltyFeatureAlgorithm *GetNoveltyFeatureAlgorithm() const {
-        return mNoveltyFeatureAlgorithm.get();
-    }
     AmpSliceAlgorithm *GetAmpSliceAlgorithm() const {
         return mAmpSliceAlgorithm.get();
     }
@@ -108,7 +104,6 @@ private:
     std::unique_ptr<OnsetSliceAlgorithm> mOnsetSliceAlgorithm;
     std::unique_ptr<TransientSliceAlgorithm> mTransientSliceAlgorithm;
     std::unique_ptr<AmpGateAlgorithm> mAmpGateAlgorithm;
-    std::unique_ptr<NoveltyFeatureAlgorithm> mNoveltyFeatureAlgorithm;
     std::unique_ptr<AmpSliceAlgorithm> mAmpSliceAlgorithm;
     std::vector<IAlgorithm *> mAllAlgorithms;
 

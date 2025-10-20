@@ -6,7 +6,6 @@
 #include "ReacomaExtension.h"
 #include "TransientSliceAlgorithm.h"
 #include "TransientAlgorithm.h"
-#include "NoveltyFeatureAlgorithm.h"
 #include "AmpSliceAlgorithm.h"
 #include <memory>
 

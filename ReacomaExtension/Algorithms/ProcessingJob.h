@@ -10,7 +10,6 @@
 #include "TransientSliceAlgorithm.h"
 #include "TransientAlgorithm.h"
 #include "AmpGateAlgorithm.h"
-#include "NoveltyFeatureAlgorithm.h"
 
 class MediaItem;
 class ReacomaExtension;

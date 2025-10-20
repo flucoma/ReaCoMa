@@ -152,8 +152,6 @@ set(REACOMA_SOURCES
     "Algorithms/NMFAlgorithm.h"
     "Algorithms/NoveltySliceAlgorithm.cpp"
     "Algorithms/NoveltySliceAlgorithm.h"
-    "Algorithms/NoveltyFeatureAlgorithm.cpp"
-    "Algorithms/NoveltyFeatureAlgorithm.h"
     "Algorithms/OnsetSliceAlgorithm.cpp"
     "Algorithms/OnsetSliceAlgorithm.h"
     "Algorithms/ProcessingJob.cpp"

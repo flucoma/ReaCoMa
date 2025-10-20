@@ -22,7 +22,6 @@
 #include "Algorithms/NoveltySliceAlgorithm.h"
 #include "Algorithms/OnsetSliceAlgorithm.h"
 #include "Algorithms/AmpGateAlgorithm.h"
-#include "Algorithms/NoveltyFeatureAlgorithm.h"
 #include "Algorithms/AmpSliceAlgorithm.h"
 
 template <ReacomaExtension::Mode M> struct ProcessAction {
@@ -124,7 +123,6 @@ ReacomaExtension::ReacomaExtension(reaper_plugin_info_t *pRec)
     mAllAlgorithms.push_back(mTransientsAlgorithm.get());
     mAllAlgorithms.push_back(mTransientSliceAlgorithm.get());
     mAllAlgorithms.push_back(mAmpGateAlgorithm.get());
-    mAllAlgorithms.push_back(mNoveltyFeatureAlgorithm.get());
     mAllAlgorithms.push_back(mAmpSliceAlgorithm.get());
 
     SetAlgorithmChoice(kNoveltySlice, false);
