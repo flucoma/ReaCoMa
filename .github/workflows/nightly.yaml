@@ -1,0 +1,116 @@
+name: Deploy a nightly release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-macos:
+    name: Build on macOS
+    if: github.repository == 'flucoma/ReaCoMa'
+    runs-on: macos-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0
+
+      - name: Install Tools with Mise
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+
+      - name: Build Project
+        run: mise run deploy
+
+      - name: Sign and Notarise
+        uses: flucoma/actions/distribution@main
+        with:
+          glob: '-e dylib'
+          package: 'ReacomaExtension/build/dist'
+          output_type: 'dmg'
+          output: 'ReaCoMa-MacOS'
+          cert: ${{ secrets.CERT }}
+          certpwd: ${{ secrets.CERTPWD }}
+          teamid: ${{ secrets.WWDRTEAMID }}
+          apppwd: ${{ secrets.APPSTORECONNECTPWD }}
+          appusr: ${{ secrets.APPSTORECONNECTUSERNAME }}
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-artifact
+          path: ReacomaExtension/build/dist/ReaCoMa-MacOS.dmg
+
+  build-windows:
+    name: Build on Windows
+    if: github.repository == 'flucoma/ReaCoMa'
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0
+      
+      - name: Install Tools with Mise
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+          cache: true
+
+      - name: Setup MSVC Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build Project
+        run: mise run deploy-windows
+
+      # TODO: Windows signing? :-(
+
+      - name: Package Windows Build
+        shell: pwsh
+        run: |
+          Compress-Archive -Path ReacomaExtension/build/dist/reaper_ReacomaExtension.dll -DestinationPath ReaCoMa-Windows.zip
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifact
+          path: ReaCoMa-Windows.zip
+          
+  release:
+    name: Create GitHub Release
+    if: github.repository == 'flucoma/ReaCoMa'
+    runs-on: ubuntu-latest
+    needs: [build-macos, build-windows]
+    steps:
+      - name: Generate Tag Name
+        id: generate_tag
+        run: echo "TAG_NAME=pre-release-$(date +'%Y-%m-%d-%H%M%S')" >> $GITHUB_ENV
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - uses: dev-drprasad/delete-tag-and-release@v0.2.1
+        with:
+          delete_release: true
+          tag_name: nightly
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package and Upload Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "ReaCoMa Nightly"
+          tag_name: nightly
+          body: "ReaCoMa built from: ${{ github.sha }}"
+          files: |
+            artifacts/macos-artifact/ReaCoMa-MacOS.dmg
+            artifacts/windows-artifact/ReaCoMa-Windows.zip
+          prerelease: true
+          draft: false
