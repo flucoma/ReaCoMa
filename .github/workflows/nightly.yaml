@@ -39,11 +39,16 @@ jobs:
           apppwd: ${{ secrets.APPSTORECONNECTPWD }}
           appusr: ${{ secrets.APPSTORECONNECTUSERNAME }}
 
+      - name: Package ReaperPkg
+        run: cmake --build ReacomaExtension/build --target ReaperPkg
+
       - name: Upload macOS Artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-artifact
-          path: ReacomaExtension/build/dist/ReaCoMa-MacOS.dmg
+          path: |
+            ReacomaExtension/build/dist/ReaCoMa-MacOS.dmg
+            ReacomaExtension/build/dist/ReaCoMa-MacOS.ReaperPkg
 
   build-windows:
     name: Build on Windows
@@ -70,16 +75,21 @@ jobs:
 
       # TODO: Windows signing? :-(
 
+      - name: Package ReaperPkg
+        run: cmake --build ReacomaExtension/build --target ReaperPkg
+
       - name: Package Windows Build
         shell: pwsh
         run: |
-          Compress-Archive -Path ReacomaExtension/build/dist/reaper_ReacomaExtension.dll -DestinationPath ReaCoMa-Windows.zip
+          Compress-Archive -Path ReacomaExtension/build/dist/reaper_ReacomaExtension.dll -DestinationPath ReacomaExtension/build/dist/ReaCoMa-Windows.zip -Force
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-artifact
-          path: ReaCoMa-Windows.zip
+          path: |
+            ReacomaExtension/build/dist/ReaCoMa-Windows.ReaperPkg
+            ReacomaExtension/build/dist/ReaCoMa-Windows.zip
           
   release:
     name: Create GitHub Release
@@ -111,6 +121,8 @@ jobs:
           body: "ReaCoMa built from: ${{ github.sha }}"
           files: |
             artifacts/macos-artifact/ReaCoMa-MacOS.dmg
+            artifacts/macos-artifact/ReaCoMa-MacOS.ReaperPkg
+            artifacts/windows-artifact/ReaCoMa-Windows.ReaperPkg
             artifacts/windows-artifact/ReaCoMa-Windows.zip
           prerelease: true
           draft: false

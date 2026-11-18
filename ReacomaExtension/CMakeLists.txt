@@ -197,6 +197,9 @@ if(MSVC)
     set_property(TARGET ${BINARY_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
+set(BUILD_TESTS OFF CACHE BOOL "Build dependency unit tests" FORCE)
+set(BUILD_TESTING OFF CACHE BOOL "Build dependency unit tests" FORCE)
+
 # Add flucoma-core subdirectory
 # The static runtime library setting above will be inherited
 add_subdirectory(${FLUCOMA_CORE_PATH} ${CMAKE_BINARY_DIR}/flucoma-core-build)
@@ -336,3 +339,79 @@ endif()
 
 set_target_properties(${BINARY_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${OUTPUT_PATH}")
 set_target_properties(${BINARY_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_PATH}")
+foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+    string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+    set_target_properties(${BINARY_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "${OUTPUT_PATH}")
+    set_target_properties(${BINARY_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "${OUTPUT_PATH}")
+endforeach()
+if(NOT CMAKE_CONFIGURATION_TYPES AND CMAKE_BUILD_TYPE)
+    string(TOUPPER "${CMAKE_BUILD_TYPE}" OUTPUT_CONFIG)
+    set_target_properties(${BINARY_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUT_CONFIG} "${OUTPUT_PATH}")
+    set_target_properties(${BINARY_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUT_CONFIG} "${OUTPUT_PATH}")
+endif()
+
+set(REAPERPKG_INFO_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/packaging/reaper-package-info.txt.in")
+set(REAPERPKG_INFO_FILE "${CMAKE_BINARY_DIR}/reaper-package-info.txt")
+set(REAPERPKG_STAGE_DIR "${CMAKE_BINARY_DIR}/reaperpkg-staging")
+set(REAPERPKG_OUTPUT_DIR "${CMAKE_BINARY_DIR}/dist")
+
+if(APPLE)
+    set(REAPERPKG_PLATFORM "MacOS")
+elseif(WIN32)
+    set(REAPERPKG_PLATFORM "Windows")
+else()
+    set(REAPERPKG_PLATFORM "Linux")
+endif()
+set(REAPERPKG_FILENAME "ReaCoMa-${REAPERPKG_PLATFORM}.ReaperPkg")
+set(REAPERPKG_OUTPUT "${REAPERPKG_OUTPUT_DIR}/${REAPERPKG_FILENAME}")
+
+if(APPLE)
+    set(_reaperpkg_archs "${CMAKE_OSX_ARCHITECTURES}")
+    if(NOT _reaperpkg_archs)
+        set(_reaperpkg_archs "${CMAKE_SYSTEM_PROCESSOR}")
+    endif()
+    if(_reaperpkg_archs MATCHES "arm64" AND _reaperpkg_archs MATCHES "x86_64")
+        set(REAPERPKG_OS_DIR "os_mac_64")
+    elseif(_reaperpkg_archs MATCHES "arm64")
+        set(REAPERPKG_OS_DIR "os_mac_arm64")
+    elseif(_reaperpkg_archs MATCHES "x86_64|i386")
+        set(REAPERPKG_OS_DIR "os_mac_x86_64")
+    else()
+        message(FATAL_ERROR "Cannot determine macOS architecture for ReaperPkg from '${_reaperpkg_archs}'")
+    endif()
+elseif(WIN32)
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(REAPERPKG_OS_DIR "os_win_x64")
+    else()
+        set(REAPERPKG_OS_DIR "os_win_32")
+    endif()
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
+        set(REAPERPKG_OS_DIR "os_linux_aarch64")
+    elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "armv7l")
+        set(REAPERPKG_OS_DIR "os_linux_armv7l")
+    elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(REAPERPKG_OS_DIR "os_linux_x86_64")
+    else()
+        set(REAPERPKG_OS_DIR "os_linux_i686")
+    endif()
+else()
+    message(FATAL_ERROR "ReaperPkg packaging is not supported on ${CMAKE_SYSTEM_NAME}")
+endif()
+
+configure_file("${REAPERPKG_INFO_SOURCE}" "${REAPERPKG_INFO_FILE}" @ONLY)
+
+add_custom_command(
+    OUTPUT "${REAPERPKG_OUTPUT}"
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${REAPERPKG_STAGE_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${REAPERPKG_STAGE_DIR}/${REAPERPKG_OS_DIR}/UserPlugins"
+    COMMAND ${CMAKE_COMMAND} -E copy "${REAPERPKG_INFO_FILE}" "${REAPERPKG_STAGE_DIR}/reaper-package-info.txt"
+    COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${BINARY_NAME}>" "${REAPERPKG_STAGE_DIR}/${REAPERPKG_OS_DIR}/UserPlugins/$<TARGET_FILE_NAME:${BINARY_NAME}>"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${REAPERPKG_OUTPUT_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E chdir "${REAPERPKG_STAGE_DIR}" ${CMAKE_COMMAND} -E tar cf "${REAPERPKG_OUTPUT}" --format=zip -- reaper-package-info.txt "${REAPERPKG_OS_DIR}"
+    DEPENDS ${BINARY_NAME} "${REAPERPKG_INFO_FILE}"
+    COMMENT "Packaging ${REAPERPKG_FILENAME} (${REAPERPKG_OS_DIR})"
+    VERBATIM
+)
+
+add_custom_target(ReaperPkg DEPENDS "${REAPERPKG_OUTPUT}")
