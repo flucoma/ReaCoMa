@@ -35,7 +35,7 @@ run = [
 ]
 
 [tasks.package]
-description = "Builds the platform .ReaperPkg into ReacomaExtension/build/dist"
+description = "Builds the platform .ReaperPkg into dist"
 run = "cmake --build ReacomaExtension/build --target ReaperPkg"
 depends = ["deploy"]
 
@@ -61,10 +61,10 @@ run = [
 ]
 
 [tasks.package-windows]
-description = "Builds the Windows .ReaperPkg and raw dll .zip into ReacomaExtension/build/dist"
+description = "Builds the Windows .ReaperPkg and raw dll .zip into dist"
 run = [
   "cmake --build ReacomaExtension/build --target ReaperPkg",
-  '''pwsh -Command "Compress-Archive -Path ReacomaExtension/build/dist/reaper_ReacomaExtension.dll -DestinationPath ReacomaExtension/build/dist/ReaCoMa-Windows.zip -Force"''',
+  '''pwsh -Command "Compress-Archive -Path dist/reaper_ReacomaExtension.dll -DestinationPath dist/ReaCoMa-Windows.zip -Force"''',
 ]
 depends = ["deploy-windows"]
 

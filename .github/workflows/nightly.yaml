@@ -30,7 +30,7 @@ jobs:
         uses: flucoma/actions/distribution@main
         with:
           glob: '-e dylib'
-          package: 'ReacomaExtension/build/dist'
+          package: 'dist'
           output_type: 'dmg'
           output: 'ReaCoMa-MacOS'
           cert: ${{ secrets.CERT }}
@@ -47,8 +47,8 @@ jobs:
         with:
           name: macos-artifact
           path: |
-            ReacomaExtension/build/dist/ReaCoMa-MacOS.dmg
-            ReacomaExtension/build/dist/ReaCoMa-MacOS.ReaperPkg
+            dist/ReaCoMa-MacOS.dmg
+            dist/ReaCoMa-MacOS.ReaperPkg
 
   build-windows:
     name: Build on Windows
@@ -81,15 +81,15 @@ jobs:
       - name: Package Windows Build
         shell: pwsh
         run: |
-          Compress-Archive -Path ReacomaExtension/build/dist/reaper_ReacomaExtension.dll -DestinationPath ReacomaExtension/build/dist/ReaCoMa-Windows.zip -Force
+          Compress-Archive -Path dist/reaper_ReacomaExtension.dll -DestinationPath dist/ReaCoMa-Windows.zip -Force
 
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-artifact
           path: |
-            ReacomaExtension/build/dist/ReaCoMa-Windows.ReaperPkg
-            ReacomaExtension/build/dist/ReaCoMa-Windows.zip
+            dist/ReaCoMa-Windows.ReaperPkg
+            dist/ReaCoMa-Windows.zip
           
   release:
     name: Create GitHub Release

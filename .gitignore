@@ -5,4 +5,5 @@ xcuserdata/
 *.reapeaks
 ReacomaExtension/TestProject/reacoma
 ReacomaExtension/build
+/dist/
 .cache/clangd/index

@@ -313,10 +313,13 @@ endif()
 set_target_properties(${BINARY_NAME} PROPERTIES OUTPUT_NAME "reaper_ReacomaExtension")
 set_target_properties(${BINARY_NAME} PROPERTIES PREFIX "")
 
+get_filename_component(REACOMA_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}" DIRECTORY)
+set(REACOMA_DIST_DIR "${REACOMA_ROOT_DIR}/dist")
+
 set(OUTPUT_PATH "")
 
 if(DEPLOYMENT_BUILD)
-    set(OUTPUT_PATH "${CMAKE_BINARY_DIR}/dist")
+    set(OUTPUT_PATH "${REACOMA_DIST_DIR}")
     message(STATUS "Deployment build enabled. Output will be in: ${OUTPUT_PATH}")
 else()
     if(APPLE)
@@ -353,7 +356,7 @@ endif()
 set(REAPERPKG_INFO_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/packaging/reaper-package-info.txt.in")
 set(REAPERPKG_INFO_FILE "${CMAKE_BINARY_DIR}/reaper-package-info.txt")
 set(REAPERPKG_STAGE_DIR "${CMAKE_BINARY_DIR}/reaperpkg-staging")
-set(REAPERPKG_OUTPUT_DIR "${CMAKE_BINARY_DIR}/dist")
+set(REAPERPKG_OUTPUT_DIR "${REACOMA_DIST_DIR}")
 
 if(APPLE)
     set(REAPERPKG_PLATFORM "MacOS")

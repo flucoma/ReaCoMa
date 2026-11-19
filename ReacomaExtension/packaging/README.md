@@ -12,8 +12,9 @@ mise run package          # macOS/Linux
 mise run package-windows  # Windows
 ```
 
-Both run the deployment build and then the `ReaperPkg` CMake target, producing
-`ReacomaExtension/build/dist/ReaCoMa-<platform>.ReaperPkg`:
+Both run the deployment build and then the `ReaperPkg` CMake target. Deployment
+builds output to the repo-root `dist/` (not `ReacomaExtension/build/`), which
+ends up holding the plugin binary and `dist/ReaCoMa-<platform>.ReaperPkg`:
 
 ```
 reaper-package-info.txt
@@ -30,7 +31,7 @@ to `os_linux_x86_64`, `os_linux_aarch64`, `os_linux_armv7l`, or
 command.
 
 `mise run package-windows` additionally writes the raw plugin dll zip
-`ReacomaExtension/build/dist/ReaCoMa-Windows.zip`, which CI keeps publishing
+`dist/ReaCoMa-Windows.zip`, which CI keeps publishing
 for users installing manually.
 
 CI builds the package after macOS signing/notarization so the packaged dylib is
